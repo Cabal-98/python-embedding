@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -12,39 +13,37 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class RobustScaler {
 
-    public static double[][] robustScaleMatrix(double[][] data, Map<String, Integer> mappaInidici, List<String> daScalare) {
-
+    public static double[][] robustScaleMatrix(double[][] data, Map<String, Integer> mappaIndici, List<String> daScalare) {
         double[][] scaledData = copyMatrix(data);
-        List<Integer> indexOfScaling = findIndexes(mappaInidici,daScalare);
+        List<Integer> indexOfScaling = findIndexes(mappaIndici, daScalare);
 
-        for(int i=0; i<data.length; i++) {
-            scaledData[i] = robustScale(scaledData[i],indexOfScaling);
+        for (Integer colIndex : indexOfScaling) {
+            double[] columnData = getColumn(scaledData, colIndex);
+            double[] scaledColumn = robustScale(columnData, indexOfScaling, columnData.length);
+            setColumn(scaledData, colIndex, scaledColumn);
         }
 
         return scaledData;
     }
 
-    public static double[] robustScale(double[] data,List<Integer> indexOfScaling) {
-        // Copiamo i dati originali per non modificare l'array originale
+    public static double[] robustScale(double[] data, List<Integer> indexOfScaling, int dataLength) {
         double[] scaledData = Arrays.copyOf(data, data.length);
 
-        // Calcoliamo il 25° e il 75° percentile
-        double q1 = percentile(scaledData, 25);
-        double q3 = percentile(scaledData, 75);
+        double q1 = percentile(scaledData, 25, dataLength);
+        double q3 = percentile(scaledData, 75, dataLength);
         double iqr = q3 - q1;
 
-        // Ridimensioniamo i dati usando i percentili
-        for (int i : indexOfScaling) {
-            scaledData[i] = (scaledData[i] - q1) / iqr;
+        for (int i=0; i<scaledData.length; i++) {
+                scaledData[i] = (scaledData[i] - q1) / iqr;
         }
 
         return scaledData;
     }
 
-    private static double percentile(double[] data, double percentile) {
+    private static double percentile(double[] data, double percentile, int dataLength) {
         Arrays.sort(data);
-        int index = (int) Math.ceil(percentile / 100.0 * data.length);
-        return data[Math.min(index, data.length - 1)];
+        int index = (int) Math.ceil(percentile / 100.0 * dataLength) - 1;
+        return data[Math.min(index, dataLength - 1)];
     }
 
     private static double[][] copyMatrix(double[][] data) {
@@ -55,7 +54,27 @@ public class RobustScaler {
 
     private static List<Integer> findIndexes(Map<String,Integer> mappaIndici, List<String> colonne) {
         return colonne.stream()
-                .map(mappaIndici::get)
-                .collect(Collectors.toList());}
+                .map(colonna -> {
+                    String colonnaToLowerCase = colonna.toLowerCase();
+                    return mappaIndici.getOrDefault(colonnaToLowerCase,-1);
+                })
+                .filter(indice -> indice != -1)
+                .collect(Collectors.toList());
+    }
+
+
+    private static double[] getColumn(double[][] data, int columnIndex) {
+        double[] column = new double[data.length];
+        for (int i = 0; i < data.length; i++) {
+            column[i] = data[i][columnIndex];
+        }
+        return column;
+    }
+
+    private static void setColumn(double[][] data, int columnIndex, double[] column) {
+        for (int i = 0; i < data.length; i++) {
+            data[i][columnIndex] = column[i];
+        }
+    }
 
 }

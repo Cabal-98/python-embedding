@@ -8,7 +8,7 @@ public record PazienteEntity(
         boolean hypertension,
         boolean heartDisease,
         float bmi,
-        float HbA1cLevel,
+        float hba1cLevel,
         int bloodGlucoseLevel,
         String gender,
         String smokingHistory,

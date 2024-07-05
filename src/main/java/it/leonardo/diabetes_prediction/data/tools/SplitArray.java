@@ -9,10 +9,10 @@ import java.util.Arrays;
 @AllArgsConstructor
 public class SplitArray {
 
-    public static double[] getLabels(double[][] data) {
+    public static double[][] getLabels(double[][] data) {
         return Arrays.stream(data)
-                .mapToDouble(row -> row[row.length -1])
-                .toArray();
+                .map(row -> new double[]{row[row.length - 1]})
+                .toArray(double[][]::new);
     }
 
     public static double[][] getData(double[][] data) {

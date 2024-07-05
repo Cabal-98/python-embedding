@@ -12,13 +12,11 @@ import it.leonardo.diabetes_prediction.dto.PazienteEncodedDTO;
 import it.leonardo.diabetes_prediction.mapper.PazienteMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.tensorflow.Tensor;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import static org.tensorflow.Tensors.create;
 
 @Service
 @AllArgsConstructor
@@ -39,16 +37,29 @@ public class DataAnalisiService {
     private final OneHotEncoder oneHotEncoder;
     private final GetFieldsIndexMap getFieldsIndexMap;
 
-    public Tensor<Double> analisiDati() {
+
+    public double[][] analisiDati() {
 
         List<PazienteDTO> shuffeledBalancedData = pazienteMapper.toDto(dataDAO.getShuffledBalancedDataset(calcolaNumeroDiabeteNegativi()));
         List<PazienteEncodedDTO> datiAnalizzati = oneHotEncoder.arrayColumnEncoder(PazienteEncodedDTO.class, shuffeledBalancedData, Arrays.asList("gender","smokingHistory"));
 
-        Map<String, Integer> mappaIndici = getFieldsIndexMap.getIndexMap(datiAnalizzati.getClass());
+        //Map<String, Integer> mappaIndici = getFieldsIndexMap.getIndexMap(datiAnalizzati.get(0).getClass());
         double[][] dataset = classToDoubleArrayService.listToDoubleArray(datiAnalizzati);
-        dataset = RobustScaler.robustScaleMatrix(dataset, mappaIndici, Arrays.asList("age","bmi","hba1cLevel","bloodGlucoseLevel"));
+        //dataset = RobustScaler.robustScaleMatrix(dataset, mappaIndici, Arrays.asList("age","bmi","hba1cLevel","bloodGlucoseLevel"));
 
-        return create(dataset);
+        return dataset;
+    }
+
+    public List<PazienteEncodedDTO> analisiDati(boolean toList) throws InvocationTargetException, IllegalAccessException, InstantiationException, NoSuchMethodException {
+
+        List<PazienteDTO> shuffeledBalancedData = pazienteMapper.toDto(dataDAO.getShuffledBalancedDataset(calcolaNumeroDiabeteNegativi()));
+        List<PazienteEncodedDTO> datiAnalizzati = oneHotEncoder.arrayColumnEncoder(PazienteEncodedDTO.class, shuffeledBalancedData, Arrays.asList("gender","smokingHistory"));
+
+        Map<String, Integer> mappaIndici = getFieldsIndexMap.getIndexMap(datiAnalizzati.get(0).getClass());
+        double[][] dataset = classToDoubleArrayService.listToDoubleArray(datiAnalizzati);
+        dataset = RobustScaler.robustScaleMatrix(dataset, mappaIndici, Arrays.asList("age","bmi","hba1clevel","bloodglucoselevel"));
+
+        return classToDoubleArrayService.dobuleToObjectList(dataset, PazienteEncodedDTO.class);
     }
 
     private int calcolaNumeroDiabeteNegativi() {

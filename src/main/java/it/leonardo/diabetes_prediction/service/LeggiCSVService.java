@@ -44,7 +44,7 @@ public class LeggiCSVService {
                         .hypertension(convertToBoolean(istanza[2]))
                         .heartDisease(convertToBoolean(istanza[3]))
                         .bmi(Float.parseFloat(istanza[5]))
-                        .HbA1cLevel(Float.parseFloat(istanza[6]))
+                        .hba1cLevel(Float.parseFloat(istanza[6]))
                         .bloodGlucoseLevel(Integer.parseInt(istanza[7]))
                         .gender(istanza[0])
                         .smokingHistory(istanza[4])

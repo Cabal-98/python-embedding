@@ -12,19 +12,19 @@ public class PazienteDTO {
     private boolean hypertension;
     private boolean heartDisease;
     private float bmi;
-    private float HbA1cLevel;
+    private float hba1cLevel;
     private int bloodGlucoseLevel;
     private String gender;
     private String smokingHistory;
     private boolean diabetes;
 
     // Costruttore con tutti i parametri
-    public PazienteDTO(int age, boolean hypertension, boolean heartDisease, float bmi, float HbA1cLevel, int bloodGlucoseLevel, String gender, String smokingHistory, boolean diabetes) {
+    public PazienteDTO(int age, boolean hypertension, boolean heartDisease, float bmi, float hba1cLevel, int bloodGlucoseLevel, String gender, String smokingHistory, boolean diabetes) {
         this.age = age;
         this.hypertension = hypertension;
         this.heartDisease = heartDisease;
         this.bmi = bmi;
-        this.HbA1cLevel = HbA1cLevel;
+        this.hba1cLevel = hba1cLevel;
         this.bloodGlucoseLevel = bloodGlucoseLevel;
         this.gender = gender;
         this.smokingHistory = smokingHistory;
@@ -66,12 +66,12 @@ public class PazienteDTO {
         this.bmi = bmi;
     }
 
-    public float getHbA1cLevel() {
-        return HbA1cLevel;
+    public float getHba1cLevel() {
+        return hba1cLevel;
     }
 
-    public void setHbA1cLevel(float hbA1cLevel) {
-        HbA1cLevel = hbA1cLevel;
+    public void setHba1cLevel(float hba1cLevel) {
+        this.hba1cLevel = hba1cLevel;
     }
 
     public int getBloodGlucoseLevel() {
