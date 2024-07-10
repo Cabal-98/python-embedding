@@ -33,3 +33,7 @@ app:
   data-analisys:
     unbalance-fraction: 0.55
     smote-factor: 2
+
+models:
+  path:
+    save: C:\workspace\python-embedding\models

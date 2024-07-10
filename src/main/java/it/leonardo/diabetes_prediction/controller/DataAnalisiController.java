@@ -33,13 +33,13 @@ public class DataAnalisiController {
     @GetMapping(path = "/dataset-analizzato")
     public double[][] dataAnalisi() {
 
-        return dataAnalisiService.analisiDati();
+        return dataAnalisiService.analisiDatiBalanced();
     }
 
     @GetMapping(path = "/dataset-analizzato/csv")
     public ResponseEntity<String> dataAnalisiCSV() throws InvocationTargetException, IllegalAccessException, InstantiationException, NoSuchMethodException {
 
-        String csvContent = scriviCSVService.scriviCSV(dataAnalisiService.analisiDati(true));
+        String csvContent = scriviCSVService.scriviCSV(Arrays.stream(dataAnalisiService.analisiDatiBalanced()).toList());
 
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy");

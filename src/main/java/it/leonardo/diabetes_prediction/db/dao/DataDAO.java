@@ -54,5 +54,18 @@ public class DataDAO {
         );
     }
 
+    public List<PazienteEntity> getDataset() {
+
+        String dbName = appConfiguration.getTableName();
+        String sqlQuery = String.format("""
+                SELECT *
+                FROM %s
+                """, dbName);
+
+        return template.query(
+                sqlQuery,
+                new DataClassRowMapper<>(PazienteEntity.class)
+        );
+    }
 
 }

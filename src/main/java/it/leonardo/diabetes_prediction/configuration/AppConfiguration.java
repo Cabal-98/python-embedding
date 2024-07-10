@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import java.nio.file.Path;
+
 @Component
 @Getter
 @Setter
@@ -28,6 +30,10 @@ public class AppConfiguration {
 
     public float getBalancePercentage() {
         return Float.parseFloat(environment.getProperty("app.data-analisys.unbalance-fraction"));
+    }
+
+    public Path getSaveModelPath() {
+        return Path.of(environment.getProperty("models.path.save"));
     }
 
 
